@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>InvestPro - Withdraw</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/withdraw.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="content-area">
+            <div class="page-header">
+                <div class="back-btn" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <h2>Withdraw Funds</h2>
+            </div>
+            
+            <div class="balance-card">
+                <span>Available Balance</span>
+                <h2 id="availableBalance">₹0</h2>
+            </div>
+            
+            <div class="withdraw-input">
+                <label>Withdrawal Amount</label>
+                <input type="number" id="withdrawAmount" placeholder="Enter amount">
+                <div class="amount-buttons">
+                    <button class="amount-preset" onclick="setAmount(500)">₹500</button>
+                    <button class="amount-preset" onclick="setAmount(1000)">₹1,000</button>
+                    <button class="amount-preset" onclick="setAmount(5000)">₹5,000</button>
+                    <button class="amount-preset" onclick="setAmount(10000)">₹10,000</button>
+                </div>
+            </div>
+            
+            <div class="payment-details-section">
+                <h3><i class="fas fa-credit-card"></i> Payment Details</h3>
+                <div class="input-group">
+                    <label>UPI ID</label>
+                    <div class="upi-wrapper">
+                        <input type="text" id="upiId" placeholder="Enter your UPI ID (e.g., name@okhdfcbank)">
+                        <button class="save-upi-btn" onclick="saveUPI()">Save</button>
+                    </div>
+                    <span class="saved-upi" id="savedUPIDisplay"></span>
+                </div>
+            </div>
+            
+            <button class="withdraw-btn" onclick="processWithdraw()">Request Withdrawal</button>
+            <div class="info-text">
+                <i class="fas fa-clock"></i> Withdrawals are processed within 24-48 hours
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="success-popup">
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Withdrawal Request Sent!</h3>
+            <p>Your withdrawal request has been submitted successfully.</p>
+            <p>Please wait for admin approval. It will be processed within 10-15 minutes.</p>
+            <button onclick="closeSuccessPopup()">OK</button>
+        </div>
+    </div>
+
+    <script src="js/withdraw.js"></script>
+</body>
+</html>

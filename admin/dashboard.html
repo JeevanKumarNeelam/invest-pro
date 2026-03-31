@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin Dashboard - InvestPro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Invest<span>Pro</span></h2>
+                <p>Administrator Panel</p>
+            </div>
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="users.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="recharge.html" class="nav-link">
+                    <i class="fas fa-wallet"></i>
+                    <span>Recharge Requests</span>
+                </a>
+                <a href="withdraw.html" class="nav-link">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Withdraw Requests</span>
+                </a>
+                <a href="plans.html" class="nav-link">
+                    <i class="fas fa-chart-simple"></i>
+                    <span>Investment Plans</span>
+                </a>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="adminLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1>Dashboard Overview</h1>
+                <div class="admin-info">
+                    <span>Administrator</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="totalUsers">0</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="totalVolume">₹0</h3>
+                        <p>Total Volume</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="pendingRecharge">0</h3>
+                        <p>Pending Recharge</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3 id="pendingWithdraw">0</h3>
+                        <p>Pending Withdraw</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/admin.js"></script>
+</body>
+</html>

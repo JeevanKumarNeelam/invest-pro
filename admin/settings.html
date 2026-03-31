@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Invest<span>Pro</span></h2>
+                <p>Administrator Panel</p>
+            </div>
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="users.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="recharge.html" class="nav-link">
+                    <i class="fas fa-wallet"></i>
+                    <span>Recharge Requests</span>
+                </a>
+                <a href="withdraw.html" class="nav-link">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Withdraw Requests</span>
+                </a>
+                <a href="plans.html" class="nav-link">
+                    <i class="fas fa-chart-simple"></i>
+                    <span>Investment Plans</span>
+                </a>
+                <a href="settings.html" class="nav-link active">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="adminLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1>Settings</h1>
+                <div class="admin-info">
+                    <span>Administrator</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3>Admin Credentials</h3>
+                <div class="input-group"><label>Username</label><input type="text" id="adminUsername" value="admin"></div>
+                <div class="input-group"><label>Password</label><input type="password" id="adminPassword" value="InvestPro@2025"></div>
+                <button class="save-settings-btn" onclick="saveAdminCredentials()">Save Changes</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>Company Information</h3>
+                <div class="input-group"><label>Company Name</label><input type="text" id="companyName" value="InvestPro"></div>
+                <div class="input-group"><label>Contact Email</label><input type="email" id="contactEmail" value="support@investpro.com"></div>
+                <div class="input-group"><label>Telegram Link</label><input type="text" id="telegramLink" value="https://t.me/investpro"></div>
+                <button class="save-settings-btn" onclick="saveCompanyInfo()">Save Changes</button>
+            </div>
+
+            <div class="settings-card">
+                <h3>Withdrawal Settings</h3>
+                <div class="input-group"><label>Minimum Withdrawal (₹)</label><input type="number" id="minWithdrawal" value="100"></div>
+                <div class="input-group"><label>Processing Time (Hours)</label><input type="number" id="processingTime" value="48"></div>
+                <button class="save-settings-btn" onclick="saveWithdrawalSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    <script src="js/admin.js"></script>
+</body>
+</html>

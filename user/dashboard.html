@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>InvestPro - Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Invest<span class="header-highlight">Pro</span></h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Welcome Section -->
+            <div class="welcome-section">
+                <div>
+                    <h2>Welcome back, <span class="highlight" id="userName">Investor</span>!</h2>
+                    <p>Ready to grow your wealth today</p>
+                </div>
+                <div class="date-badge" id="currentDate"></div>
+            </div>
+            
+            <!-- Portfolio Card -->
+            <div class="portfolio-card">
+                <div class="portfolio-header">
+                    <span>Total Balance</span>
+                    <i class="fas fa-eye" id="toggleBalance"></i>
+                </div>
+                <div class="portfolio-balance" id="totalBalance">₹0.00</div>
+                <div class="portfolio-change positive" id="todayGain">
+                    <i class="fas fa-arrow-up"></i> +₹0.00 (0%)
+                </div>
+                <div class="portfolio-stats">
+                    <div class="stat-item">
+                        <span>Invested</span>
+                        <strong id="investedAmount">₹0</strong>
+                    </div>
+                    <div class="stat-item">
+                        <span>Returns</span>
+                        <strong class="positive" id="returnsAmount">₹0</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-buttons">
+                    <div class="action-btn" onclick="location.href='recharge.html'">
+                        <i class="fas fa-wallet"></i>
+                        <span>Recharge</span>
+                    </div>
+                    <div class="action-btn" onclick="location.href='withdraw.html'">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Withdraw</span>
+                    </div>
+                    <div class="action-btn" onclick="location.href='profile.html'">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </div>
+                    <div class="action-btn" id="telegramBtn">
+                        <i class="fab fa-telegram-plane"></i>
+                        <span>Telegram</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Investment Categories -->
+            <div class="investment-categories">
+                <div class="section-header">
+                    <h3>Investment Plans</h3>
+                </div>
+                <div class="category-tabs" id="categoryTabs"></div>
+                <div id="schemesContainer"></div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="location.href='dashboard.html'">
+                <i class="fas fa-chart-line"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" onclick="location.href='recharge.html'">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
+            </div>
+            <div class="nav-item" onclick="location.href='profile.html'">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+        </nav>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Admin - Recharge Requests</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Invest<span>Pro</span></h2>
+                <p>Administrator Panel</p>
+            </div>
+            <div class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="users.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="recharge.html" class="nav-link active">
+                    <i class="fas fa-wallet"></i>
+                    <span>Recharge Requests</span>
+                </a>
+                <a href="withdraw.html" class="nav-link">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>Withdraw Requests</span>
+                </a>
+                <a href="plans.html" class="nav-link">
+                    <i class="fas fa-chart-simple"></i>
+                    <span>Investment Plans</span>
+                </a>
+                <a href="settings.html" class="nav-link">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </div>
+            <div class="sidebar-footer">
+                <button class="logout-btn" onclick="adminLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-main">
+            <div class="admin-header">
+                <h1>Recharge Requests</h1>
+                <div class="admin-info">
+                    <span>Administrator</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>ID</th><th>User</th><th>Mobile</th><th>Amount</th><th>Gift Card Code</th><th>Requested</th><th>Status</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody id="rechargeTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,146 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f1f5f9;
+    padding: 20px;
+}
+
+/* Centering */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Card */
+.form-box {
+    background: white;
+    padding: 25px 20px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* Branding */
+.logo {
+    text-align: center;
+    margin: 0;
+    color: #3b82f6;
+    font-size: 28px;
+}
+
+.tagline {
+    text-align: center;
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+/* Heading */
+h2 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Inputs */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 13px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+input:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
+}
+
+/* Password wrapper with eye icon */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 40px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #64748b;
+    font-size: 16px;
+}
+
+.toggle-password:hover {
+    color: #3b82f6;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 12px;
+    background: #3b82f6;
+    border: none;
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #2563eb;
+}
+
+/* Link */
+.link {
+    margin-top: 15px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.link a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.link a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .form-box {
+        padding: 20px 15px;
+    }
+    
+    .logo {
+        font-size: 24px;
+    }
+}

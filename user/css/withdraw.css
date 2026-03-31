@@ -1,0 +1,340 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f1f5f9;
+}
+
+.app-container {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.content-area {
+    padding: 1rem;
+    padding-bottom: 80px;
+}
+
+/* Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.back-btn {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #eef2ff;
+}
+
+.back-btn i {
+    font-size: 1.2rem;
+    color: #3b82f6;
+}
+
+h2 {
+    font-size: 1.3rem;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* Balance Card */
+.balance-card {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(16,185,129,0.2);
+}
+
+.balance-card span {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+}
+
+.balance-card h2 {
+    font-size: 2rem;
+    margin-top: 0.5rem;
+    color: white;
+}
+
+/* Withdraw Input Section */
+.withdraw-input {
+    background: white;
+    border-radius: 20px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #eef2ff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.withdraw-input label {
+    font-size: 0.8rem;
+    color: #64748b;
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.withdraw-input input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.withdraw-input input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
+}
+
+.amount-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.amount-preset {
+    flex: 1;
+    padding: 0.6rem;
+    background: #f1f5f9;
+    border: none;
+    border-radius: 40px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.amount-preset:hover {
+    background: #e2e8f0;
+}
+
+/* Payment Details Section */
+.payment-details-section {
+    background: white;
+    border-radius: 20px;
+    padding: 1.2rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #eef2ff;
+}
+
+.payment-details-section h3 {
+    font-size: 0.9rem;
+    color: #334155;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.payment-details-section h3 i {
+    color: #3b82f6;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #334155;
+}
+
+.upi-wrapper {
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+}
+
+.upi-wrapper input {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.upi-wrapper input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.1);
+}
+
+.save-upi-btn {
+    padding: 0.8rem 1.2rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.save-upi-btn:hover {
+    background: #2563eb;
+}
+
+.saved-upi {
+    display: block;
+    font-size: 0.7rem;
+    color: #10b981;
+    margin-top: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+/* Withdraw Button */
+.withdraw-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.withdraw-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239,68,68,0.3);
+}
+
+/* Info Text */
+.info-text {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 1rem;
+}
+
+.info-text i {
+    margin-right: 0.3rem;
+}
+
+/* Success Popup */
+.success-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1100;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-content {
+    background: white;
+    width: 85%;
+    max-width: 320px;
+    padding: 1.5rem;
+    border-radius: 20px;
+    text-align: center;
+    animation: modalFadeIn 0.3s ease;
+}
+
+.success-content i {
+    font-size: 3rem;
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.success-content h3 {
+    font-size: 1.2rem;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
+
+.success-content p {
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.success-content button {
+    margin-top: 1rem;
+    padding: 0.8rem 1.5rem;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .content-area {
+        padding: 0.8rem;
+    }
+    
+    .amount-buttons {
+        gap: 0.4rem;
+    }
+    
+    .amount-preset {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .upi-wrapper {
+        flex-direction: column;
+    }
+    
+    .save-upi-btn {
+        width: 100%;
+    }
+}

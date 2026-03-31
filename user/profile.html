@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>InvestPro - Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/profile.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="content-area">
+            <div class="page-header">
+                <div class="back-btn" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i>
+                </div>
+                <h2>My Profile</h2>
+            </div>
+            
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-name" id="profileName">Investor</div>
+                <div class="profile-mobile" id="profileMobile">9876543210</div>
+            </div>
+            
+            <div class="info-card">
+                <span class="info-label">Member Since</span>
+                <span class="info-value" id="memberSince">March 2025</span>
+            </div>
+            <div class="info-card">
+                <span class="info-label">Total Investments</span>
+                <span class="info-value" id="totalInvestments">₹0</span>
+            </div>
+            <div class="info-card">
+                <span class="info-label">Total Returns</span>
+                <span class="info-value positive" id="totalReturns">₹0</span>
+            </div>
+            <div class="info-card">
+                <span class="info-label">Wallet Balance</span>
+                <span class="info-value" id="walletBalance">₹0</span>
+            </div>
+            
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script src="js/profile.js"></script>
+</body>
+</html>

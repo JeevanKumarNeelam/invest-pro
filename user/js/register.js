@@ -1,3 +1,6 @@
+// API Configuration
+const API_URL = 'https://investpro-api-616i.onrender.com';
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM Elements
     const form = document.getElementById('registerForm');
@@ -155,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
 
-    // Form submission
+    // Form submission - Connect to Render API
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -195,53 +198,43 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Prepare user data for MongoDB
+        // Prepare user data for API
         const userData = {
             fullName: nameInput.value.trim(),
             mobile: mobileInput.value,
-            password: passwordInput.value, // Will be hashed in backend
-            withdrawalPassword: withdrawalInput.value, // Will be hashed in backend
-            invitationCode: document.getElementById('invitationCode').value || null,
-            walletBalance: 0,
-            totalInvested: 0,
-            totalReturns: 0,
-            createdAt: new Date().toISOString()
+            password: passwordInput.value,
+            withdrawalPassword: withdrawalInput.value,
+            invitationCode: document.getElementById('invitationCode').value || null
         };
         
         registerBtn.disabled = true;
         registerBtn.textContent = 'Creating Account...';
         
         try {
-            // Store user data in localStorage for now (will connect to MongoDB later)
-            // This is temporary - backend will handle this
-            const existingUsers = JSON.parse(localStorage.getItem('investpro_users') || '[]');
+            // Send to Render API
+            const response = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
             
-            // Check if mobile already exists
-            if (existingUsers.some(u => u.mobile === userData.mobile)) {
-                alert('Mobile number already registered. Please login.');
-                window.location.href = 'index.html';
-                return;
+            const result = await response.json();
+            
+            if (result.success) {
+                alert(`✅ Registration Successful!\n\nWelcome ${userData.fullName}!\n\nRedirecting to login...`);
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } else {
+                alert(result.message || 'Registration failed. Please try again.');
             }
             
-            existingUsers.push(userData);
-            localStorage.setItem('investpro_users', JSON.stringify(existingUsers));
-            
-            // Store current user session
-            localStorage.setItem('currentUser', JSON.stringify({
-                mobile: userData.mobile,
-                name: userData.fullName,
-                walletBalance: 0
-            }));
-            
-            alert(`✅ Registration Successful!\n\nWelcome ${userData.fullName}!\n\nRedirecting to login...`);
-            
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1500);
-            
         } catch (error) {
-            alert('Registration failed. Please try again.');
             console.error('Error:', error);
+            alert('Connection error. Please check your internet and try again.');
         } finally {
             registerBtn.disabled = false;
             registerBtn.textContent = 'Register';

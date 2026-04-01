@@ -24,6 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
+// Add this line
+app.use('/api/plans', require('./routes/plans'));
 
 // Basic route
 app.get('/', (req, res) => {

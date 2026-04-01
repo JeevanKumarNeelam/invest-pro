@@ -1,3 +1,6 @@
+// API Configuration
+const API_URL = 'https://investpro-api-616i.onrender.com';
+
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('loginForm');
     const mobileInput = document.getElementById('mobile');
@@ -41,21 +44,23 @@ document.addEventListener('DOMContentLoaded', function() {
         loginBtn.disabled = true;
         loginBtn.textContent = 'Logging in...';
         
-        // Demo credentials
+        // Demo credentials (for testing)
         if (mobile === '9912443052' && password === '123456') {
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             const demoUser = {
-                mobile: '9912443052',
-                name: 'Demo User',
+                _id: 'demo123',
                 fullName: 'Demo User',
-                walletBalance: 0,
-                totalInvested: 0,
-                totalReturns: 0,
-                createdAt: new Date().toISOString()
+                mobile: '9912443052',
+                walletBalance: 12500,
+                totalInvested: 10000,
+                totalReturns: 2500
             };
             
+            localStorage.setItem('token', 'demo_token');
+            localStorage.setItem('user', JSON.stringify(demoUser));
             localStorage.setItem('currentUser', JSON.stringify(demoUser));
+            
             alert('✅ Login Successful! Welcome Demo User!');
             window.location.href = 'dashboard.html';
             loginBtn.disabled = false;
@@ -63,31 +68,36 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Check registered users
-        const users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
-        const user = users.find(u => u.mobile === mobile && u.password === password);
-        
-        if (user) {
-            await new Promise(resolve => setTimeout(resolve, 1000));
+        try {
+            // Send login request to Render API
+            const response = await fetch(`${API_URL}/api/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ mobile, password })
+            });
             
-            const currentUser = {
-                mobile: user.mobile,
-                name: user.fullName,
-                fullName: user.fullName,
-                walletBalance: user.walletBalance || 0,
-                totalInvested: user.totalInvested || 0,
-                totalReturns: user.totalReturns || 0,
-                createdAt: user.createdAt
-            };
+            const result = await response.json();
             
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
-            alert(`✅ Login Successful! Welcome ${user.fullName}!`);
-            window.location.href = 'dashboard.html';
-        } else {
-            alert('❌ Invalid mobile number or password');
+            if (result.success) {
+                // Store token and user data
+                localStorage.setItem('token', result.token);
+                localStorage.setItem('user', JSON.stringify(result.user));
+                localStorage.setItem('currentUser', JSON.stringify(result.user));
+                
+                alert(`✅ Login Successful! Welcome ${result.user.fullName || result.user.mobile}!`);
+                window.location.href = 'dashboard.html';
+            } else {
+                alert(result.message || '❌ Invalid mobile number or password');
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Connection error. Please check your internet and try again.');
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Login';
         }
-        
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Login';
     });
 });

@@ -1,28 +1,36 @@
-// Investment Schemes Data
-const schemes = {
-    silver: [
-        { name: 'Silver Saver', min: 1000, returns: '8-10%', duration: '30 days', risk: 'Low' },
-        { name: 'Silver Plus', min: 5000, returns: '10-12%', duration: '45 days', risk: 'Low' }
-    ],
-    gold: [
-        { name: 'Gold Growth', min: 10000, returns: '12-15%', duration: '60 days', risk: 'Medium' },
-        { name: 'Gold Max', min: 25000, returns: '15-18%', duration: '90 days', risk: 'Medium' }
-    ],
-    platinum: [
-        { name: 'Platinum Elite', min: 50000, returns: '18-22%', duration: '120 days', risk: 'High' },
-        { name: 'Platinum Pro', min: 100000, returns: '22-25%', duration: '180 days', risk: 'High' }
-    ]
-};
+// API Configuration
+const API_URL = 'https://investpro-api-616i.onrender.com';
 
 let currentUser = null;
+let investmentPlans = { silver: [], gold: [], platinum: [] };
 
-document.addEventListener('DOMContentLoaded', function() {
+// Fetch plans from backend API
+async function fetchPlansFromAPI() {
+    try {
+        const response = await fetch(`${API_URL}/api/plans`);
+        const data = await response.json();
+        
+        if (data.success) {
+            investmentPlans = data.plans;
+            console.log('Plans loaded:', investmentPlans);
+        } else {
+            console.error('Failed to fetch plans');
+        }
+    } catch (error) {
+        console.error('Error fetching plans:', error);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', async function() {
     // Check if user is logged in
     currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser) {
         window.location.href = 'index.html';
         return;
     }
+    
+    // Fetch plans from API first
+    await fetchPlansFromAPI();
     
     // Set user name
     document.getElementById('userName').textContent = currentUser.fullName || currentUser.name || currentUser.mobile;
@@ -35,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update portfolio display
     updatePortfolioDisplay();
     
-    // Initialize investment categories
+    // Initialize investment categories with fetched plans
     initCategories();
     
     // Telegram Button
@@ -97,7 +105,12 @@ function initCategories() {
     
     if (!tabsContainer || !schemesContainer) return;
     
+    // Clear existing content
+    tabsContainer.innerHTML = '';
+    schemesContainer.innerHTML = '';
+    
     categories.forEach((cat, index) => {
+        // Create tab
         const tab = document.createElement('button');
         tab.className = `category-tab ${index === 0 ? 'active' : ''}`;
         tab.textContent = categoryNames[cat];
@@ -105,45 +118,57 @@ function initCategories() {
         tab.onclick = () => switchCategory(cat);
         tabsContainer.appendChild(tab);
         
+        // Create schemes container
         const container = document.createElement('div');
         container.className = `schemes-container ${index === 0 ? 'active' : ''}`;
         container.id = `${cat}Schemes`;
         
-        schemes[cat].forEach(scheme => {
-            container.appendChild(createSchemeCard(scheme, cat));
-        });
+        const categoryPlans = investmentPlans[cat] || [];
+        
+        if (categoryPlans.length === 0) {
+            container.innerHTML = `
+                <div class="scheme-card" style="text-align: center; padding: 2rem;">
+                    <p>No investment plans available in this category yet.</p>
+                    <p style="font-size: 0.8rem; color: #64748b;">Check back soon!</p>
+                </div>
+            `;
+        } else {
+            categoryPlans.forEach(plan => {
+                container.appendChild(createSchemeCard(plan, cat));
+            });
+        }
         
         schemesContainer.appendChild(container);
     });
 }
 
-function createSchemeCard(scheme, category) {
+function createSchemeCard(plan, category) {
     const card = document.createElement('div');
     card.className = 'scheme-card';
     card.innerHTML = `
         <div class="scheme-header">
-            <h4>${scheme.name}</h4>
-            <span class="scheme-badge">${scheme.risk}</span>
+            <h4>${plan.name}</h4>
+            <span class="scheme-badge">${plan.risk}</span>
         </div>
         <div class="scheme-details">
             <div class="scheme-detail-item">
                 <span class="detail-label">Min Investment</span>
-                <span class="detail-value">₹${scheme.min.toLocaleString()}</span>
+                <span class="detail-value">₹${plan.minInvestment.toLocaleString()}</span>
             </div>
             <div class="scheme-detail-item">
                 <span class="detail-label">Expected Returns</span>
-                <span class="detail-value positive">${scheme.returns}</span>
+                <span class="detail-value positive">${plan.expectedReturns}</span>
             </div>
             <div class="scheme-detail-item">
                 <span class="detail-label">Duration</span>
-                <span class="detail-value">${scheme.duration}</span>
+                <span class="detail-value">${plan.duration}</span>
             </div>
             <div class="scheme-detail-item">
                 <span class="detail-label">Category</span>
                 <span class="detail-value">${category.charAt(0).toUpperCase() + category.slice(1)}</span>
             </div>
         </div>
-        <button class="invest-btn" onclick="processInvestment('${scheme.name}', ${scheme.min})">
+        <button class="invest-btn" onclick="processInvestment('${plan.name}', ${plan.minInvestment})">
             Invest Now <i class="fas fa-arrow-right"></i>
         </button>
     `;
@@ -166,7 +191,7 @@ function processInvestment(schemeName, minAmount) {
         // Calculate expected returns
         const scheme = findScheme(schemeName);
         if (scheme) {
-            const returnRange = scheme.returns.replace('%', '').split('-');
+            const returnRange = scheme.expectedReturns.replace('%', '').split('-');
             const avgReturn = (parseInt(returnRange[0]) + parseInt(returnRange[1])) / 2;
             const expectedReturn = (minAmount * avgReturn) / 100;
             currentUser.totalReturns = (currentUser.totalReturns || 0) + expectedReturn;
@@ -198,8 +223,8 @@ function processInvestment(schemeName, minAmount) {
 }
 
 function findScheme(schemeName) {
-    for (const category in schemes) {
-        const found = schemes[category].find(s => s.name === schemeName);
+    for (const category in investmentPlans) {
+        const found = investmentPlans[category].find(p => p.name === schemeName);
         if (found) return found;
     }
     return null;

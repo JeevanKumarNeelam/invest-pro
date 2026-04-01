@@ -1,8 +1,5 @@
 const dns = require('dns');
-dns.setServers(['1.1.1.1', '8.8.8.8']);  // Cloudflare + Google DNS
-
-
-
+dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 const express = require('express');
 const dotenv = require('dotenv');
@@ -11,6 +8,13 @@ const connectDB = require('./config/database');
 
 // Load environment variables
 dotenv.config();
+
+// Debug environment
+console.log('🔧 Environment Check:');
+console.log('PORT:', process.env.PORT || '5000');
+console.log('MONGODB_URI exists:', !!process.env.MONGODB_URI);
+console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+console.log('JWT_SECRET length:', process.env.JWT_SECRET?.length || 'using fallback');
 
 // Connect to MongoDB
 connectDB();
@@ -24,7 +28,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/auth'));
-// Add this line
 app.use('/api/plans', require('./routes/plans'));
 
 // Basic route
@@ -34,10 +37,10 @@ app.get('/', (req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error('Error:', err.stack);
     res.status(500).json({ 
         success: false, 
-        message: 'Something went wrong!' 
+        message: err.message || 'Something went wrong!' 
     });
 });
 

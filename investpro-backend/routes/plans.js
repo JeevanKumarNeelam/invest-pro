@@ -2,16 +2,11 @@ const express = require('express');
 const router = express.Router();
 const Plan = require('../models/Plan');
 
-// ============ PUBLIC ROUTES (For Website) ============
-
-// @desc    Get all active plans for website
-// @route   GET /api/plans
-// @access  Public
+// Get all active plans for website
 router.get('/', async (req, res) => {
     try {
         const plans = await Plan.find({ isActive: true }).sort({ category: 1, minInvestment: 1 });
         
-        // Group plans by category for easy display on website
         const groupedPlans = {
             silver: plans.filter(p => p.category === 'silver'),
             gold: plans.filter(p => p.category === 'gold'),
@@ -23,7 +18,7 @@ router.get('/', async (req, res) => {
             plans: groupedPlans
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching plans:', error);
         res.status(500).json({
             success: false,
             message: 'Server error'
@@ -31,11 +26,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ============ ADMIN ROUTES (For Admin Panel) ============
-
-// @desc    Get all plans for admin
-// @route   GET /api/admin/plans
-// @access  Admin
+// Admin routes (you'll add these later)
 router.get('/admin', async (req, res) => {
     try {
         const plans = await Plan.find().sort({ category: 1, createdAt: -1 });
@@ -44,110 +35,35 @@ router.get('/admin', async (req, res) => {
             plans
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 
-// @desc    Create new plan
-// @route   POST /api/admin/plans
-// @access  Admin
 router.post('/admin', async (req, res) => {
     try {
         const { name, category, minInvestment, expectedReturns, duration, risk } = req.body;
-        
-        const plan = await Plan.create({
-            name,
-            category,
-            minInvestment,
-            expectedReturns,
-            duration,
-            risk
-        });
-        
-        res.status(201).json({
-            success: true,
-            message: 'Plan created successfully',
-            plan
-        });
+        const plan = await Plan.create({ name, category, minInvestment, expectedReturns, duration, risk });
+        res.status(201).json({ success: true, message: 'Plan created', plan });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: error.message || 'Server error'
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// @desc    Update plan
-// @route   PUT /api/admin/plans/:id
-// @access  Admin
 router.put('/admin/:id', async (req, res) => {
     try {
-        const { name, category, minInvestment, expectedReturns, duration, risk, isActive } = req.body;
-        
-        const plan = await Plan.findById(req.params.id);
-        
-        if (!plan) {
-            return res.status(404).json({
-                success: false,
-                message: 'Plan not found'
-            });
-        }
-        
-        plan.name = name || plan.name;
-        plan.category = category || plan.category;
-        plan.minInvestment = minInvestment || plan.minInvestment;
-        plan.expectedReturns = expectedReturns || plan.expectedReturns;
-        plan.duration = duration || plan.duration;
-        plan.risk = risk || plan.risk;
-        plan.isActive = isActive !== undefined ? isActive : plan.isActive;
-        
-        await plan.save();
-        
-        res.json({
-            success: true,
-            message: 'Plan updated successfully',
-            plan
-        });
+        const plan = await Plan.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.json({ success: true, message: 'Plan updated', plan });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 
-// @desc    Delete plan
-// @route   DELETE /api/admin/plans/:id
-// @access  Admin
 router.delete('/admin/:id', async (req, res) => {
     try {
-        const plan = await Plan.findById(req.params.id);
-        
-        if (!plan) {
-            return res.status(404).json({
-                success: false,
-                message: 'Plan not found'
-            });
-        }
-        
-        await plan.deleteOne();
-        
-        res.json({
-            success: true,
-            message: 'Plan deleted successfully'
-        });
+        await Plan.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: 'Plan deleted' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 });
 

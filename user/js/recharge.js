@@ -1,3 +1,5 @@
+const API_URL = 'https://investpro-api-616i.onrender.com';
+
 let selectedMethod = 'giftcard';
 let currentUser = null;
 
@@ -45,11 +47,12 @@ function closeSuccessPopup() {
     window.location.href = 'dashboard.html';
 }
 
-function submitRechargeRequest() {
+async function submitRechargeRequest() {
     const mobile = document.getElementById('modalMobile').value;
     const giftCardCode = document.getElementById('giftCardCode').value;
     const giftCardValue = document.getElementById('giftCardValue').value;
     const rechargeAmount = document.getElementById('amount').value;
+    const token = localStorage.getItem('token');
     
     if (!mobile || mobile.length !== 10) {
         alert('Please enter a valid 10-digit mobile number');
@@ -71,31 +74,43 @@ function submitRechargeRequest() {
         return;
     }
     
-    // Create recharge request for admin approval
-    const rechargeRequest = {
-        id: Date.now(),
-        userId: currentUser.mobile,
-        userName: currentUser.fullName,
-        mobile: mobile,
-        amount: parseInt(rechargeAmount),
-        giftCardCode: giftCardCode,
-        giftCardValue: parseInt(giftCardValue),
-        status: 'pending',
-        requestedAt: new Date().toISOString()
-    };
+    if (!token) {
+        alert('Please login again');
+        window.location.href = 'index.html';
+        return;
+    }
     
-    let rechargeRequests = JSON.parse(localStorage.getItem('recharge_requests') || '[]');
-    rechargeRequests.push(rechargeRequest);
-    localStorage.setItem('recharge_requests', JSON.stringify(rechargeRequests));
-    
-    closeModal();
-    document.getElementById('successPopup').style.display = 'flex';
-    
-    setTimeout(() => {
-        if (document.getElementById('successPopup').style.display === 'flex') {
-            closeSuccessPopup();
+    try {
+        const response = await fetch(`${API_URL}/api/recharge/request`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                amount: parseInt(rechargeAmount),
+                giftCardCode: giftCardCode,
+                giftCardValue: parseInt(giftCardValue)
+            })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            closeModal();
+            document.getElementById('successPopup').style.display = 'flex';
+            setTimeout(() => {
+                if (document.getElementById('successPopup').style.display === 'flex') {
+                    closeSuccessPopup();
+                }
+            }, 5000);
+        } else {
+            alert(result.message || 'Failed to submit recharge request');
         }
-    }, 5000);
+    } catch (error) {
+        console.error('Recharge error:', error);
+        alert('Connection error. Please try again.');
+    }
 }
 
 window.onclick = function(event) {

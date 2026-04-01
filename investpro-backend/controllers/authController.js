@@ -3,22 +3,16 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // Generate JWT Token
-const generateToken = (id, mobile) => {
-    return jwt.sign(
-        { id, mobile },
-        process.env.JWT_SECRET,
-        { expiresIn: '7d' }
-    );
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 };
 
-// @desc    Register User
-// @route   POST /api/auth/register
-// @access  Public
+// Register User
 const registerUser = async (req, res) => {
     try {
         const { fullName, mobile, password, withdrawalPassword, invitationCode } = req.body;
 
-        // Check if user already exists
+        // Check if user exists
         const userExists = await User.findOne({ mobile });
         if (userExists) {
             return res.status(400).json({
@@ -33,46 +27,37 @@ const registerUser = async (req, res) => {
             mobile,
             password,
             withdrawalPassword,
-            invitationCode: invitationCode || null
+            invitationCode: invitationCode || null,
+            walletBalance: 0,
+            totalInvested: 0,
+            totalReturns: 0
         });
 
-        if (user) {
-            res.status(201).json({
-                success: true,
-                message: 'Registration successful! Please login.',
-                user: {
-                    id: user._id,
-                    fullName: user.fullName,
-                    mobile: user.mobile,
-                    walletBalance: user.walletBalance
-                }
-            });
-        } else {
-            res.status(400).json({
-                success: false,
-                message: 'Invalid user data'
-            });
-        }
+        res.status(201).json({
+            success: true,
+            message: 'Registration successful! Please login.',
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                mobile: user.mobile,
+                walletBalance: user.walletBalance
+            }
+        });
     } catch (error) {
-        console.error(error);
+        console.error('Register error:', error);
         res.status(500).json({
             success: false,
-            message: 'Server error',
-            error: error.message
+            message: 'Server error: ' + error.message
         });
     }
 };
 
-// @desc    Login User
-// @route   POST /api/auth/login
-// @access  Public
+// Login User
 const loginUser = async (req, res) => {
     try {
         const { mobile, password } = req.body;
 
-        // Find user by mobile
         const user = await User.findOne({ mobile });
-        
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -80,23 +65,18 @@ const loginUser = async (req, res) => {
             });
         }
 
-        // Check password
-        const isPasswordMatch = await user.comparePassword(password);
-        
-        if (!isPasswordMatch) {
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
             return res.status(401).json({
                 success: false,
                 message: 'Invalid mobile number or password'
             });
         }
 
-        // Generate token
-        const token = generateToken(user._id, user.mobile);
-
         res.json({
             success: true,
             message: 'Login successful',
-            token,
+            token: generateToken(user._id),
             user: {
                 id: user._id,
                 fullName: user.fullName,
@@ -107,44 +87,22 @@ const loginUser = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error);
+        console.error('Login error:', error);
         res.status(500).json({
             success: false,
-            message: 'Server error',
-            error: error.message
+            message: 'Server error: ' + error.message
         });
     }
 };
 
-// @desc    Get Current User Profile
-// @route   GET /api/auth/me
-// @access  Private
+// Get Current User
 const getCurrentUser = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password -withdrawalPassword');
-        
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: 'User not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            user
-        });
+        res.json({ success: true, user });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            success: false,
-            message: 'Server error'
-        });
+        res.status(500).json({ success: false, message: error.message });
     }
 };
 
-module.exports = {
-    registerUser,
-    loginUser,
-    getCurrentUser
-};
+module.exports = { registerUser, loginUser, getCurrentUser };

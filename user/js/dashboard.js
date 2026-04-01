@@ -16,8 +16,18 @@ async function fetchCurrentUser() {
             }
         });
         
+        if (response.status === 401) {
+            // Token expired or invalid
+            localStorage.removeItem('token');
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+            return null;
+        }
+        
         const data = await response.json();
         if (data.success) {
+            // Update localStorage with fresh data
+            localStorage.setItem('currentUser', JSON.stringify(data.user));
             return data.user;
         }
         return null;
@@ -62,11 +72,6 @@ function updateDashboardDisplay() {
     }
 }
 
-// Save user data to localStorage (for persistence)
-function saveUserToLocalStorage(user) {
-    localStorage.setItem('currentUser', JSON.stringify(user));
-}
-
 // Initialize dashboard
 async function initDashboard() {
     // Check if user is logged in
@@ -79,16 +84,9 @@ async function initDashboard() {
     // Fetch fresh user data from API
     currentUser = await fetchCurrentUser();
     if (!currentUser) {
-        // If API fails, fallback to localStorage
-        currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (!currentUser) {
-            window.location.href = 'index.html';
-            return;
-        }
+        window.location.href = 'index.html';
+        return;
     }
-    
-    // Save to localStorage for persistence
-    saveUserToLocalStorage(currentUser);
     
     // Set current date
     const today = new Date();
@@ -120,15 +118,16 @@ async function initDashboard() {
         }
         balanceVisible = !balanceVisible;
     });
-}
-
-// Refresh user data (call after recharge/invest)
-async function refreshUserData() {
-    currentUser = await fetchCurrentUser();
-    if (currentUser) {
-        saveUserToLocalStorage(currentUser);
-        updateDashboardDisplay();
-    }
+    
+    // Refresh user data every 10 seconds (to catch admin approvals)
+    setInterval(async () => {
+        const freshUser = await fetchCurrentUser();
+        if (freshUser && freshUser.walletBalance !== currentUser.walletBalance) {
+            currentUser = freshUser;
+            updateDashboardDisplay();
+            showToast('💰 Your wallet has been updated!');
+        }
+    }, 10000);
 }
 
 function initCategories() {
@@ -140,12 +139,10 @@ function initCategories() {
     
     if (!tabsContainer || !schemesContainer) return;
     
-    // Clear existing content
     tabsContainer.innerHTML = '';
     schemesContainer.innerHTML = '';
     
     categories.forEach((cat, index) => {
-        // Create tab
         const tab = document.createElement('button');
         tab.className = `category-tab ${index === 0 ? 'active' : ''}`;
         tab.textContent = categoryNames[cat];
@@ -153,7 +150,6 @@ function initCategories() {
         tab.onclick = () => switchCategory(cat);
         tabsContainer.appendChild(tab);
         
-        // Create schemes container
         const container = document.createElement('div');
         container.className = `schemes-container ${index === 0 ? 'active' : ''}`;
         container.id = `${cat}Schemes`;
@@ -218,13 +214,11 @@ async function processInvestment(planId, minAmount, planName) {
         return;
     }
     
-    // Check if user has sufficient balance
     if ((currentUser.walletBalance || 0) < minAmount) {
         showToast(`Insufficient balance! Need ₹${minAmount.toLocaleString()}. Please recharge.`);
         return;
     }
     
-    // Confirm investment
     if (confirm(`Do you want to invest ₹${minAmount.toLocaleString()} in ${planName}?`)) {
         try {
             const response = await fetch(`${API_URL}/api/invest/buy`, {
@@ -240,8 +234,9 @@ async function processInvestment(planId, minAmount, planName) {
             
             if (result.success) {
                 showToast(result.message);
-                // Refresh user data to update wallet balance
-                await refreshUserData();
+                // Refresh user data
+                currentUser = await fetchCurrentUser();
+                updateDashboardDisplay();
             } else {
                 showToast(result.message || 'Investment failed');
             }

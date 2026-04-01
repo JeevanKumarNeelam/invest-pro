@@ -100,15 +100,17 @@ async function loadDashboardData() {
 }
 
 // ============ USERS PAGE ============
+// ============ USERS PAGE ============
 if (document.getElementById('usersTableBody')) {
     loadUsersTable();
 }
 
 async function loadUsersTable() {
     try {
+        const token = sessionStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/api/admin/users`, {
             headers: {
-                'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+                'Authorization': `Bearer ${token}`
             }
         });
         
@@ -117,6 +119,7 @@ async function loadUsersTable() {
             const data = await response.json();
             users = data.users || [];
         } else {
+            console.error('Failed to fetch users from API');
             users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
         }
         
@@ -131,89 +134,112 @@ async function loadUsersTable() {
                 <td>₹${(user.totalInvested || 0).toLocaleString()}</td>
                 <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td>
-                    <button class="action-btn edit-btn" onclick="openEditUserModal(${index})">Edit</button>
-                    <button class="action-btn delete-btn" onclick="deleteUser(${index})">Delete</button>
+                    <button class="action-btn edit-btn" onclick="openEditUserModal('${user._id}')">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteUser('${user._id}')">Delete</button>
                 </td>
             </tr>
         `).join('');
     } catch (error) {
         console.error('Error loading users:', error);
-        const users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
-        const tbody = document.getElementById('usersTableBody');
-        
-        tbody.innerHTML = users.map((user, index) => `
-            <tr>
-                <td>${index + 1}</td>
-                <td>${user.fullName || 'N/A'}</td>
-                <td>${user.mobile}</td>
-                <td>₹${(user.walletBalance || 0).toLocaleString()}</td>
-                <td>₹${(user.totalInvested || 0).toLocaleString()}</td>
-                <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}</td>
-                <td>
-                    <button class="action-btn edit-btn" onclick="openEditUserModal(${index})">Edit</button>
-                    <button class="action-btn delete-btn" onclick="deleteUser(${index})">Delete</button>
-                </td>
-            </tr>
-        `).join('');
+        alert('Failed to load users. Please refresh the page.');
     }
 }
 
-let currentEditIndex = null;
+let currentEditUserId = null;
 
-function openEditUserModal(index) {
-    const users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
-    const user = users[index];
-    currentEditIndex = index;
+function openEditUserModal(userId) {
+    currentEditUserId = userId;
     
-    document.getElementById('editUserId').value = index;
-    document.getElementById('editFullName').value = user.fullName || '';
-    document.getElementById('editMobile').value = user.mobile;
-    document.getElementById('editWalletBalance').value = user.walletBalance || 0;
-    document.getElementById('editTotalInvested').value = user.totalInvested || 0;
-    document.getElementById('editTotalReturns').value = user.totalReturns || 0;
-    
-    document.getElementById('editUserModal').style.display = 'flex';
+    // Fetch user details from the table or API
+    fetch(`${API_URL}/api/admin/users`, {
+        headers: {
+            'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const user = data.users.find(u => u._id === userId);
+        if (user) {
+            document.getElementById('editFullName').value = user.fullName || '';
+            document.getElementById('editMobile').value = user.mobile;
+            document.getElementById('editWalletBalance').value = user.walletBalance || 0;
+            document.getElementById('editTotalInvested').value = user.totalInvested || 0;
+            document.getElementById('editTotalReturns').value = user.totalReturns || 0;
+            document.getElementById('editUserModal').style.display = 'flex';
+        } else {
+            alert('User not found');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching user:', error);
+        alert('Failed to load user details');
+    });
 }
 
 function closeEditModal() {
     document.getElementById('editUserModal').style.display = 'none';
-    currentEditIndex = null;
+    currentEditUserId = null;
 }
 
-function saveUserEdit() {
-    const users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
-    if (currentEditIndex !== null) {
-        users[currentEditIndex].fullName = document.getElementById('editFullName').value;
-        users[currentEditIndex].walletBalance = parseFloat(document.getElementById('editWalletBalance').value);
-        users[currentEditIndex].totalInvested = parseFloat(document.getElementById('editTotalInvested').value);
-        users[currentEditIndex].totalReturns = parseFloat(document.getElementById('editTotalReturns').value);
+async function saveUserEdit() {
+    if (!currentEditUserId) return;
+    
+    const updatedUser = {
+        fullName: document.getElementById('editFullName').value,
+        walletBalance: parseFloat(document.getElementById('editWalletBalance').value),
+        totalInvested: parseFloat(document.getElementById('editTotalInvested').value),
+        totalReturns: parseFloat(document.getElementById('editTotalReturns').value)
+    };
+    
+    try {
+        const response = await fetch(`${API_URL}/api/admin/users/${currentEditUserId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+            },
+            body: JSON.stringify(updatedUser)
+        });
         
-        localStorage.setItem('investpro_users', JSON.stringify(users));
+        const result = await response.json();
         
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && currentUser.mobile === users[currentEditIndex].mobile) {
-            currentUser.walletBalance = users[currentEditIndex].walletBalance;
-            currentUser.totalInvested = users[currentEditIndex].totalInvested;
-            currentUser.totalReturns = users[currentEditIndex].totalReturns;
-            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        if (result.success) {
+            alert('User updated successfully!');
+            closeEditModal();
+            loadUsersTable(); // Refresh the table
+        } else {
+            alert(result.message || 'Failed to update user');
         }
-        
-        alert('User updated successfully!');
-        closeEditModal();
-        loadUsersTable();
+    } catch (error) {
+        console.error('Error updating user:', error);
+        alert('Failed to update user. Please try again.');
     }
 }
 
-function deleteUser(index) {
+async function deleteUser(userId) {
     if (confirm('Are you sure you want to delete this user?')) {
-        const users = JSON.parse(localStorage.getItem('investpro_users') || '[]');
-        users.splice(index, 1);
-        localStorage.setItem('investpro_users', JSON.stringify(users));
-        loadUsersTable();
-        alert('User deleted successfully!');
+        try {
+            const response = await fetch(`${API_URL}/api/admin/users/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('adminToken')}`
+                }
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('User deleted successfully!');
+                loadUsersTable(); // Refresh the table
+            } else {
+                alert(result.message || 'Failed to delete user');
+            }
+        } catch (error) {
+            console.error('Error deleting user:', error);
+            alert('Failed to delete user. Please try again.');
+        }
     }
 }
-
 // ============ RECHARGE PAGE ============
 if (document.getElementById('rechargeTableBody')) {
     loadRechargeTable();

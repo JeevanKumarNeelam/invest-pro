@@ -12,11 +12,11 @@ const PlanSchema = new mongoose.Schema({
         enum: ['silver', 'gold', 'platinum'],
         default: 'silver'
     },
-    minInvestment: {
-        type: Number,
-        required: true,
-        min: 100
-    },
+    minInvestment: {  // Make sure this is the field name
+    type: Number,
+    required: true,
+    min: 100
+},
     expectedReturns: {
         type: String,
         required: true

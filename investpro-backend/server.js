@@ -28,6 +28,7 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/recharge', require('./routes/recharge'));
 app.use('/api/withdraw', require('./routes/withdraw'));
 app.use('/api/invest', require('./routes/invest'));
+// Add this line with other routes
 
 app.get('/', (req, res) => {
     res.json({ message: 'InvestPro API is running...' });
